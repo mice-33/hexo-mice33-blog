@@ -1,0 +1,5 @@
+hexo s
+
+hexo clean //执行此命令后继续下一条
+hexo g //生成博客目录
+hexo s //本地预览
