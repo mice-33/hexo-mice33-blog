@@ -18,10 +18,20 @@ nav:
   fixed: false
 
 menu:
-  # Home: / || fas fa-home
-  # List||fas fa-list:
-  #   Music: /music/ || fas fa-music
-  #   Movie: /movies/ || fas fa-video
+  主页: / || fas fa-home
+  博文 || fa fa-graduation-cap:
+    分类: /categories/ || fa fa-archive
+    标签: /tags/ || fa fa-tags
+    归档: /archives/ || fa fa-folder-open
+  生活 || fas fa-list:
+    分享: /shuoshuo/ || fa fa-comments-o
+    相册: /photos/ || fa fa-camera-retro
+    音乐: /music/ || fa fa-music
+    影视: /movies/ || fas fa-video
+  留言板: /comment/ || fa fa-paper-plane
+  #留言板: /messageboard/ || fa fa-paper-plane
+  关于笔者: /about/ || fas fa-heart
+
 
 # --------------------------------------
 # Code Blocks Settings
@@ -29,10 +39,10 @@ menu:
 
 code_blocks:
   # Code block theme: darker / pale night / light / ocean / false
-  theme: light
-  macStyle: false
+  theme: darker
+  macStyle: true
   # Code block height limit (unit: px)
-  height_limit: false
+  height_limit: 300
   word_wrap: false
 
   # Toolbar
@@ -40,23 +50,23 @@ code_blocks:
   language: true
   # true: shrink the code blocks | false: expand the code blocks | none: expand code blocks and hide the button
   shrink: false
-  fullpage: false
+  fullpage: true
 
 # Social media links
 # Formal:
 #   icon: link || the description || color
 social:
-  # fab fa-github: https://github.com/xxxxx || Github || '#24292e'
-  # fas fa-envelope: mailto:xxxxxx@gmail.com || Email || '#4a7dbe'
-
+ fab fa-github: https://github.com/mice-33 || Github || '#24292e'
+ fas fa-envelope: mailto:wangxp@gmail.com || Email || '#4a7dbe'
+ fab fa-qq: http://wpa.qq.com/msgrd?v=3&uin=2838133128&site=qq&menu=yes || QQ || '#24292e'
 # --------------------------------------
 # Image Settings
 # --------------------------------------
 
-favicon: /img/favicon.png
+favicon: /img/mice33.png
 
 avatar:
-  img: /img/butterfly-icon.png
+  img: /img/mice33.png
   effect: false
 
 # Disable all banner images
@@ -66,7 +76,7 @@ disable_top_img: false
 default_top_img:
 
 # The banner image of index page
-index_img:
+index_img: /img/ljh.jpg
 
 # The banner image of archive page
 archive_img:
@@ -101,7 +111,7 @@ cover:
   archives_enable: true
   # When cover is not set, the default cover is displayed
   default_cover:
-    # - xxx.jpg
+  # - xxx.jpg
 
 # Replace Broken Images
 error_img:
@@ -148,9 +158,9 @@ index_top_img_height:
 
 # The subtitle on homepage
 subtitle:
-  enable: false
+  enable: true
   # Typewriter Effect
-  effect: true
+  effect: false
   # Customize typed.js
   # https://github.com/mattboldt/typed.js/#customization
   typed_option:
@@ -164,6 +174,7 @@ subtitle:
   source: false
   # If you close the typewriter effect, the subtitle will only show the first line of sub
   sub:
+    - mice33的blog
 
 # Article layout on the homepage
 # 1: Cover on the left, info on the right
@@ -210,12 +221,12 @@ reward:
   enable: false
   text:
   QR_code:
-    # - img: /img/wechat.jpg
-    #   link:
-    #   text: wechat
-    # - img: /img/alipay.jpg
-    #   link:
-    #   text: alipay
+  # - img: /img/wechat.jpg
+  #   link:
+  #   text: wechat
+  # - img: /img/alipay.jpg
+  #   link:
+  #   text: alipay
 
 # Post edit
 # Easily browse and edit blog source code online.
@@ -427,7 +438,7 @@ copy:
 
 # Need to install the hexo-wordcount plugin
 wordcount:
-  enable: false
+  enable: true
   # Display the word count of the article in post meta
   post_wordcount: true
   # Display the time to read the article in post meta
@@ -526,14 +537,14 @@ comments:
   # Leave it empty if you don't need comments
   # Choose: Disqus/Disqusjs/Livere/Gitalk/Valine/Waline/Utterances/Facebook Comments/Twikoo/Giscus/Remark42/Artalk
   # Format of two comments system : Disqus,Waline
-  use:
+  use: Waline
   # Display the comment name next to the button
   text: true
   # Lazyload: The comment system will be load when comment element enters the browser's viewport.
   # If you set it to true, the comment count will be invalid
   lazyload: false
   # Display comment count in post's top_img
-  count: false
+  count: true
   # Display comment count in Home Page
   card_post_count: false
 
@@ -582,11 +593,20 @@ valine:
 # Waline - A simple comment system with backend support fork from Valine
 # https://waline.js.org/
 waline:
-  serverURL:
+  serverURL: https://comments.mice33.top/
   bg:
   # Use Waline pageview count as the page view count
-  pageview: false
+  pageview: true
   option:
+    meta: ['nick', 'mail', 'link'] # 评论者信息字段
+    requiredMeta: ['nick'] # 必填字段
+    lang: 'zh-CN' # 语言
+    locale:
+      placeholder: '欢迎留言讨论~' # 评论框占位符
+    avatar: 'monsterid' # 头像类型
+    avatarCDN: 'https://www.gravatar.com/avatar/' # 头像 CDN
+    wordLimit: 0 # 评论字数限制，0 为不限制
+    pageSize: 10 # 每页评论
 
 # Utterances
 # https://utteranc.es/
@@ -736,10 +756,10 @@ ad:
 # --------------------------------------
 
 site_verification:
-  # - name: google-site-verification
-  #   content: xxxxxx
-  # - name: baidu-site-verification
-  #   content: xxxxxxx
+# - name: google-site-verification
+#   content: xxxxxx
+# - name: baidu-site-verification
+#   content: xxxxxxx
 
 # --------------------------------------
 # Beautify / Effect
@@ -785,7 +805,7 @@ mask:
 
 # Loading Animation
 preloader:
-  enable: false
+  enable: true
   # source
   # 1. fullpage-loading
   # 2. pace (progress bar)
@@ -886,9 +906,9 @@ click_heart:
 clickShowText:
   enable: false
   text:
-    # - I
-    # - LOVE
-    # - YOU
+  # - I
+  # - LOVE
+  # - YOU
   fontSize: 15px
   random: false
   mobile: false
@@ -975,7 +995,7 @@ pjax:
   enable: false
   # Exclude the specified pages from pjax, such as '/music/'
   exclude:
-    # - /xxxxxx/
+  # - /xxxxxx/
 
 # Inject the css and script (aplayer/meting)
 aplayerInject:
@@ -1023,13 +1043,13 @@ pwa:
 Open_Graph_meta:
   enable: true
   option:
-    # twitter_card:
-    # twitter_image:
-    # twitter_id:
-    # twitter_site:
-    # google_plus:
-    # fb_admins:
-    # fb_app_id:
+  # twitter_card:
+  # twitter_image:
+  # twitter_id:
+  # twitter_site:
+  # google_plus:
+  # fb_admins:
+  # fb_app_id:
 
 # Structured Data
 # https://developers.google.com/search/docs/guides/intro-structured-data
@@ -1042,9 +1062,9 @@ css_prefix: true
 # Insert the code to head (before '</head>' tag) and the bottom (before '</body>' tag)
 inject:
   head:
-    # - <link rel="stylesheet" href="/xxx.css">
+  # - <link rel="stylesheet" href="/xxx.css">
   bottom:
-    # - <script src="xxxx"></script>
+  # - <script src="xxxx"></script>
 
 # CDN Settings
 # Don't modify the following settings unless you know how they work
@@ -1064,58 +1084,58 @@ CDN:
   custom_format:
 
   option:
-    # abcjs_basic_js:
-    # activate_power_mode:
-    # algolia_js:
-    # algolia_search:
-    # aplayer_css:
-    # aplayer_js:
-    # artalk_css:
-    # artalk_js:
-    # blueimp_md5:
-    # busuanzi:
-    # canvas_fluttering_ribbon:
-    # canvas_nest:
-    # canvas_ribbon:
-    # chartjs:
-    # click_heart:
-    # clickShowText:
-    # disqusjs:
-    # disqusjs_css:
-    # docsearch_css:
-    # docsearch_js:
-    # egjs_infinitegrid:
-    # fancybox:
-    # fancybox_css:
-    # fireworks:
-    # fontawesome:
-    # gitalk:
-    # gitalk_css:
-    # giscus:
-    # instantpage:
-    # instantsearch:
-    # katex:
-    # katex_copytex:
-    # lazyload:
-    # local_search:
-    # main:
-    # main_css:
-    # mathjax:
-    # medium_zoom:
-    # mermaid:
-    # meting_js:
-    # prismjs_autoloader:
-    # prismjs_js:
-    # prismjs_lineNumber_js:
-    # pjax:
-    # sharejs:
-    # sharejs_css:
-    # snackbar:
-    # snackbar_css:
-    # translate:
-    # twikoo:
-    # typed:
-    # utils:
-    # valine:
-    # waline_css:
-    # waline_js:
+  # abcjs_basic_js:
+  # activate_power_mode:
+  # algolia_js:
+  # algolia_search:
+  # aplayer_css:
+  # aplayer_js:
+  # artalk_css:
+  # artalk_js:
+  # blueimp_md5:
+  # busuanzi:
+  # canvas_fluttering_ribbon:
+  # canvas_nest:
+  # canvas_ribbon:
+  # chartjs:
+  # click_heart:
+  # clickShowText:
+  # disqusjs:
+  # disqusjs_css:
+  # docsearch_css:
+  # docsearch_js:
+  # egjs_infinitegrid:
+  # fancybox:
+  # fancybox_css:
+  # fireworks:
+  # fontawesome:
+  # gitalk:
+  # gitalk_css:
+  # giscus:
+  # instantpage:
+  # instantsearch:
+  # katex:
+  # katex_copytex:
+  # lazyload:
+  # local_search:
+  # main:
+  # main_css:
+  # mathjax:
+  # medium_zoom:
+  # mermaid:
+  # meting_js:
+  # prismjs_autoloader:
+  # prismjs_js:
+  # prismjs_lineNumber_js:
+  # pjax:
+  # sharejs:
+  # sharejs_css:
+  # snackbar:
+  # snackbar_css:
+  # translate:
+  # twikoo:
+  # typed:
+  # utils:
+  # valine:
+  # waline_css:
+  # waline_js:
