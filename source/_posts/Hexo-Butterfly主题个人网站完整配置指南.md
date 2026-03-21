@@ -18,355 +18,566 @@ top: true
 cover: /img/hexo-butterfly-config.jpg
 ---
 
-# 🦋 Hexo Butterfly主题个人网站完整配置指南
+# 🧩 Hexo博客从本地到上线：Git、Hexo、GitHub Pages与自定义域名关系梳理
 
-本文详细记录了我搭建个人博客网站的完整过程，包含主题配置、评论系统、页面创建等所有步骤。
+最近在重新折腾个人博客的时候，梳理了几个非常典型的问题：
+
+- 为什么 GitHub 上的内容变了，但网站没有立刻变？
+- 为什么 `mice-33.github.io` 和 `mice33.top` 都能打开，但其实还是同一个站点？
+- 为什么本地能运行，VS Code 终端里却不行？
+- 为什么中国内地访问 GitHub Pages 有时不太稳定？
+- 为什么有的教程直接用 `hexo`，而我这里更适合用 `npx hexo`？
+
+这篇文章不再只讲“怎么操作”，而是把**整个博客运行链路背后的知识**系统梳理一遍。搞懂这些之后，后面无论是更新博客、部署网站，还是迁移托管平台，都会清楚很多。
 
 <!-- more -->
 
-## 📚 参考资料
+---
 
-- [Hexo Butterfly主题相关配置 - 知乎](https://zhuanlan.zhihu.com/p/492207978)
-- [Hexo-Next 主题博客个性化配置超详细](https://blog.csdn.net/as480133937/article/details/100138838)
-- [Hexo-Butterfly主题配置](https://www.cnblogs.com/ncphoton/p/16950595.html)
+## 1️⃣ 你到底在维护什么
 
-## 1️⃣ 基础配置
+很多人刚开始搭博客时，会下意识觉得自己在维护“一个网页”。
 
-### 1.1 准备工作
+其实不完全对。
 
-#### 🔧 配置文件管理
+你真正维护的是一个 **Hexo 博客工程**，它至少包含两类内容。
 
-为了减少升级主题后带来的不便，建议使用以下方法：
+### 1.1 博客源码
 
-在 Hexo 根目录创建 `_config.butterfly.yml` 文件，并把主题目录的 `_config.yml` 内容复制进去。
+也就是你平时真正编辑的那部分文件，比如：
+
+- `source/` 里的文章、页面
+- `_config.yml`
+- `_config.butterfly.yml`
+- `package.json`
+- 主题目录里的模板、样式和配置
+
+这些内容是给 **Hexo** 用的，不是浏览器直接访问的网页。
+
+### 1.2 生成后的静态文件
+
+Hexo 会把源码“编译”成浏览器能直接打开的静态页面，比如：
+
+- `index.html`
+- CSS
+- JavaScript
+- 图片资源
+- 每篇文章对应的 HTML 页面
+
+这些内容通常会被生成到：
 
 ```text
-├── _config.yml                  # Hexo 主配置文件
-├── _config.butterfly.yml        # Butterfly 主题配置文件
-└── themes/butterfly/_config.yml # 主题原始配置（保留）
+public/
 ```
 
-> ⚠️ **注意**：
-> - 不要删除主题目录的 `_config.yml`
-> - 优先级：`_config.butterfly.yml` > `themes/butterfly/_config.yml`
-> - 以后只需在 `_config.butterfly.yml` 中配置
+⚠️ **真正上线给别人访问的，是这份生成结果，而不是源码本身。**
 
-### 1.2 代码仓库管理
+所以要特别记住一句话：
 
-#### 📂 双仓库策略
+> GitHub 仓库变了，不一定等于网站变了。  
+> 因为你可能只是上传了源码，还没有重新生成并部署网页。
 
-建议将代码仓库和网站仓库分开管理：
+---
+
+## 2️⃣ Git 和 GitHub 到底在做什么
+
+### 2.1 Git 是什么
+
+Git 是 **版本管理工具**。
+
+它负责记录：
+
+- 你改了哪些文件
+- 哪次改动是一个完整版本
+- 如何回退到旧版本
+- 如何把本地版本同步到远程仓库
+
+### 2.2 GitHub 是什么
+
+GitHub 是 **托管 Git 仓库的平台**。
+
+它负责帮你保存远程仓库内容，也就是把你本地的 Git 项目放到网上。
+
+### 2.3 最常见的三个 Git 操作
 
 ```bash
-# 博客源码仓库（私有）
-https://github.com/用户名/hexo-blog-source
-
-# 网站部署仓库（公开）
-https://github.com/用户名/用户名.github.io
+git add .
+git commit -m "更新博客内容"
+git push origin main
 ```
 
-#### 🔗 本地连接代码仓库
+它们分别表示：
+
+- `git add`：把改动加入暂存区
+- `git commit`：在本地生成一个版本快照
+- `git push`：把本地提交推送到远程仓库
+
+整个过程可以理解成：
+
+> 改文件 → add → commit → push
+
+---
+
+## 3️⃣ 为什么 GitHub 变了，网站却没变
+
+这是 Hexo 初学者最容易困惑的一点。
+
+原因是：**源码同步** 和 **网站发布** 其实是两件事。
+
+### 3.1 源码同步
+
+比如你执行：
 
 ```bash
-# 查看当前远程仓库
+git add .
+git commit -m "更新博客源码"
+git push origin main
+```
+
+这一步做的事情是：
+
+✅ 把博客源码同步到 GitHub 仓库
+
+但它不一定会自动更新网站页面。
+
+### 3.2 网站发布
+
+如果你想让别人真正看到更新后的网站，Hexo 还需要执行：
+
+```bash
+npx hexo clean
+npx hexo g
+npx hexo d
+```
+
+或者简写成：
+
+```bash
+npx hexo d -g
+```
+
+这里分别表示：
+
+- `clean`：清理旧缓存和旧生成结果
+- `g` = `generate`：重新生成静态站点
+- `d` = `deploy`：把生成结果发布到托管平台
+
+所以更准确地说：
+
+> `git push` 推的是源码  
+> `hexo deploy` 推的是网站
+
+这两个概念一定不要混。
+
+---
+
+## 4️⃣ SSH、HTTPS、remote 是什么关系
+
+Git 把本地仓库同步到 GitHub 时，常见有两种连接方式。
+
+### 4.1 HTTPS 方式
+
+像这样：
+
+```bash
+https://github.com/用户名/仓库名.git
+```
+
+优点：
+
+- 好理解
+- 一开始最常见
+
+缺点：
+
+- 容易遇到认证、网络重置、登录问题
+- 某些网络环境下不太稳定
+
+### 4.2 SSH 方式
+
+像这样：
+
+```bash
+git@github.com:mice-33/hexo-mice33-blog.git
+```
+
+优点：
+
+- 配好后比较稳定
+- 推送时不用反复走 HTTPS 认证
+
+### 4.3 remote 是什么
+
+`remote` 可以理解成：
+
+> 这个本地 Git 仓库对应的远程地址
+
+查看当前远程仓库：
+
+```bash
 git remote -v
-
-# 连接源码仓库
-git remote add origin https://github.com/用户名/hexo-blog-source.git
-
-# 推送代码
-git push -u origin main
 ```
 
-### 1.3 网站更新流程
+把远程仓库从 HTTPS 改成 SSH：
 
 ```bash
-# 清除缓存
+git remote set-url origin git@github.com:mice-33/hexo-mice33-blog.git
+```
+
+### 4.4 公钥和私钥
+
+使用 SSH 时，会涉及一对密钥：
+
+- **私钥**：保存在你电脑里，不能泄露
+- **公钥**：添加到 GitHub，让 GitHub 识别你
+
+GitHub 通过这套机制确认：
+
+> 你是不是这个仓库对应账号的合法拥有者
+
+---
+
+## 5️⃣ Node、npm、npx、Hexo 分别是什么
+
+这几个名字经常一起出现，但作用不一样。
+
+### 5.1 Node.js
+
+Node.js 是 JavaScript 的运行环境。
+
+很多前端工具、构建工具、博客生成器都依赖它，Hexo 也是其中之一。
+
+### 5.2 npm
+
+npm 是 Node.js 自带的包管理工具。
+
+它负责安装项目依赖，比如：
+
+```bash
+npm install
+```
+
+含义是：
+
+> 按照 `package.json` 安装这个项目需要的所有依赖
+
+### 5.3 Hexo
+
+Hexo 是一个 **静态博客生成器**。
+
+它的核心工作有两步：
+
+1. 读取你的博客源码
+2. 生成静态网页文件
+
+常见命令如下：
+
+```bash
 hexo clean
-
-# 重新生成静态文件
-hexo generate
-
-# 部署到网页仓库
-hexo deploy
+hexo g
+hexo s
+hexo d
 ```
 
-## 2️⃣ 评论系统配置
+分别表示：
 
-### 2.1 Waline 评论系统部署
+- `clean`：清理缓存
+- `g`：生成静态站点
+- `s`：本地预览
+- `d`：部署到远程平台
 
-#### 🚀 部署步骤
+### 5.4 npx 是什么
 
-**① 一键部署到 Vercel**
+`npx` 可以理解成：
 
-1. 访问 [Waline 官方部署链接](https://github.com/walinejs/waline/tree/main/example)
-2. 点击 "Deploy with Vercel"
-3. 连接 GitHub 账号
-4. 设置项目名称（如：`my-waline-comments`）
-5. 直接 Deploy
-6. 获取部署地址（如：`https://my-waline-comments.vercel.app`）
+> 临时运行项目里安装的命令工具
 
-#### 🗄️ 数据库配置（推荐）
-
-**为什么需要配置数据库？**
-
-| 不配置数据库 | 配置 LeanCloud |
-|-------------|---------------|
-| ✅ 零配置，5分钟搞定 | ✅ 数据永久保存 |
-| ✅ 适合测试 | ✅ 支持邮件通知 |
-| ❌ 重部署丢失数据 | ✅ 可备份导出 |
-| ❌ 功能受限 | ✅ 后台管理 |
-
-**LeanCloud 配置步骤：**
-
-1. **注册 LeanCloud**
-   - 访问 [LeanCloud 控制台](https://console.leancloud.app/)
-   - 注册免费账号
-   - 创建应用（选择开发版）
-
-2. **获取密钥**
-   ```text
-   应用设置 → 应用凭证
-
-   需要的信息：
-   - AppID: xxxx-gzGzoHsz
-   - AppKey: xxxx-bjGzoHsz
-   - MasterKey: xxxx,master
-   ```
-
-3. **配置 Vercel 环境变量**
-   ```text
-   Settings → Environment Variables
-
-   添加三个变量：
-   LEAN_ID = 你的AppID
-   LEAN_KEY = 你的AppKey
-   LEAN_MASTER_KEY = 你的MasterKey
-   ```
-
-4. **重新部署项目**
-
-#### ⚙️ 主题配置
-
-```yaml
-# _config.butterfly.yml
-comments:
-  use: waline
-  text: true
-  lazyload: false
-  count: true
-  card_post_count: true
-
-waline:
-  serverURL: https://comments.mice33.top/
-  bg:
-  pageview: true
-  option:
-    meta: ['nick', 'mail', 'link']
-    requiredMeta: ['nick']
-    lang: 'zh-CN'
-    locale:
-      placeholder: '欢迎留言讨论~'
-    avatar: 'monsterid'
-    avatarCDN: 'https://www.gravatar.com/avatar/'
-    wordLimit: 0
-    pageSize: 10
-```
-
-## 3️⃣ 页面内容配置
-
-### 3.1 菜单配置
-
-```yaml
-# _config.butterfly.yml
-menu:
-  主页: / || fas fa-home
-  博文 || fa fa-graduation-cap:
-    分类: /categories/ || fa fa-archive
-    标签: /tags/ || fa fa-tags
-    归档: /archives/ || fa fa-folder-open
-  生活 || fas fa-list:
-    分享: /shuoshuo/ || fa fa-comments-o
-    相册: /photos/ || fa fa-camera-retro
-    音乐: /music/ || fa fa-music
-    影视: /movies/ || fas fa-video
-  留言板: /comment/ || fa fa-paper-plane
-  关于笔者: /about/ || fas fa-heart
-```
-
-### 3.2 页面创建
-
-#### 📄 基础页面创建命令
+比如当前项目里已经有 Hexo，但你的系统里没有全局 `hexo` 命令，那么就可以这样运行：
 
 ```bash
-# 创建关于页面
-hexo new page about
-
-# 创建留言板
-hexo new page comment
-
-# 创建分类页面
-hexo new page categories
-
-# 创建标签页面
-hexo new page tags
-
-# 创建生活页面
-hexo new page shuoshuo
-hexo new page photos
-hexo new page music
-hexo new page movies
+npx hexo g
 ```
 
-#### 📝 页面内容示例
+这表示：
 
-**关于页面 (`source/about/index.md`)：**
+> 用当前项目里的 Hexo 来执行生成操作
 
-````markdown
----
-title: 关于我
-date: 2025-08-01 05:53:28
-type: about
-comments: true
----
+### 5.5 为什么有的教程不用 npx
 
-# 👋 你好，我是 Mice33
-
-## 🎯 关于这个博客
-这里是我的个人技术博客，主要分享：
-- 生信技术心得
-- 生物学习笔记
-- 生活感悟/评论
-- 有趣的故事
-
-## 📚 技能栈
-### 🧬 生物信息学
-- **序列分析**: BLAST, ClustalW, MEGA
-- **基因组学**: BWA, GATK, SAMtools
-- **转录组学**: DESeq2, edgeR, GSEA
-
-### 💻 编程语言
-- **R语言**: 数据分析、可视化
-- **Python**: 生信脚本、机器学习
-- **Shell/Bash**: Linux环境数据处理
-
-## 📫 联系我
-- **邮箱**: mice33@example.com
-- **GitHub**: https://github.com/mice33
-- **ORCID**: 0000-0000-0000-0000
-
-欢迎在下方留言交流 👇
-````
-
-## 4️⃣ 如何创建博文
-
-### 4.1 创建新文章
-
-#### 🖊️ 基本命令
+因为很多教程默认作者已经全局安装过 Hexo CLI，所以可以直接写：
 
 ```bash
-# 创建新文章
-hexo new "文章标题"
-
-# 创建草稿（不会发布）
-hexo new draft "文章标题"
-
-# 指定文章类型
-hexo new post "文章标题"
-```
-
-#### 📍 实际示例
-
-```bash
-# 创建生信相关文章
-hexo new "生信入门：BLAST基本使用方法"
-hexo new "Python处理FASTA文件的技巧"
-hexo new "R语言数据可视化入门"
-```
-
-### 4.2 文章模板
-
-创建后的文章位于：`source/_posts/文章标题.md`
-
-**完整的文章模板：**
-
-````markdown
----
-title: 生信入门：BLAST基本使用方法
-date: 2025-08-01 05:53:28
-updated: 2025-08-01 05:53:28
-tags:
-  - 生物信息学
-  - BLAST
-  - 序列比对
-  - 入门教程
-categories:
-  - 生信技术
-  - 工具使用
-author: mice33
-description: 详细介绍BLAST的基本概念和使用方法，适合生信初学者
-keywords: BLAST, 生物信息学, 序列比对, 生信入门
-top: false
-cover: https://example.com/blast-cover.jpg
----
-
-# 🧬 生信入门：BLAST基本使用方法
-
-## 📖 什么是BLAST？
-
-BLAST（Basic Local Alignment Search Tool）是生物信息学中最常用的序列比对工具...
-
-<!-- more -->
-
-## 🎯 BLAST的主要类型
-
-### 1. BLASTn
-- 用于核酸序列对核酸数据库的比对
-- 适用于基因序列、转录本序列等
-
-### 2. BLASTp
-- 用于蛋白质序列对蛋白质数据库的比对
-- 适用于蛋白质功能注释
-
-## 💻 实际操作示例
-
-```bash
-# 使用命令行BLAST
-blastn -query input.fasta -db nt -out result.txt -outfmt 6
-```
-````
-
-### 4.3 Front-matter 字段说明
-
-| 字段 | 说明 | 示例 |
-|------|------|------|
-| `title` | 文章标题 | `"BLAST使用教程"` |
-| `date` | 发布日期 | `2025-08-01 05:53:28` |
-| `updated` | 更新日期 | `2025-08-01 05:53:28` |
-| `tags` | 标签（数组） | `["生信", "教程"]` |
-| `categories` | 分类（数组） | `["技术", "生信"]` |
-| `description` | 文章描述 | SEO 优化用 |
-| `cover` | 封面图片 | 文章头图 |
-| `top` | 是否置顶 | `true/false` |
-
-### 4.4 发布流程
-
-```bash
-# 1. 创建文章
-hexo new "你的文章标题"
-
-# 2. 编辑内容
-notepad source/_posts/你的文章标题.md
-
-# 3. 预览效果
-hexo server
-
-# 4. 发布文章
 hexo clean
 hexo generate
 hexo deploy
 ```
 
+而我这里更适合用：
+
+```bash
+npx hexo clean
+npx hexo g
+npx hexo d
+```
+
+两种写法本质上是在做同一件事，只是调用方式不同：
+
+- `hexo ...`：依赖系统全局环境
+- `npx hexo ...`：依赖当前项目环境
+
+对于 Windows + PowerShell 场景，`npx` 往往更稳一些。
+
 ---
 
-**这份配置指南帮到你了吗？如果有任何问题，欢迎在评论区讨论！** 💬
+## 6️⃣ 本地预览和正式发布不是一回事
+
+这点非常重要。
+
+### 6.1 本地预览
+
+```bash
+npx hexo s
+```
+
+执行后，通常会得到一个地址：
+
+```text
+http://localhost:4000
+```
+
+这表示网站只是运行在你自己的电脑上。
+
+特点是：
+
+- 默认只有本机能访问
+- 电脑关机后网站就不存在了
+- 它只是预览，不是正式上线
+
+### 6.2 正式发布
+
+```bash
+npx hexo d
+```
+
+这一步表示：
+
+> 把生成好的静态网站发布到托管平台
+
+比如：
+
+- GitHub Pages
+- Cloudflare Pages
+- Vercel
+- OSS
+
+这时别人访问的是托管平台上的网站，不再依赖你的电脑一直开机。
+
+所以可以得出一个结论：
+
+> 内网穿透只对“本地运行的网站”有意义  
+> 对 GitHub Pages 这种已经托管好的站点没意义
+
+---
+
+## 7️⃣ GitHub Pages 是什么
+
+GitHub Pages 可以理解为：
+
+> GitHub 自带的静态网站托管服务
+
+它可以把仓库中的静态文件发布成网页。
+
+常见有两种类型：
+
+### 7.1 用户站点
+
+仓库名通常是：
+
+```text
+username.github.io
+```
+
+比如我的默认站点地址就是：
+
+```text
+https://mice-33.github.io
+```
+
+### 7.2 项目站点
+
+某个普通仓库也可以开启 Pages，从某个分支或目录发布静态网站。
+
+---
+
+## 8️⃣ 默认域名和自定义域名是什么关系
+
+我现在这个博客有两个入口：
+
+- `https://mice-33.github.io`
+- `https://mice33.top/`
+
+它们的关系其实是这样的。
+
+### 8.1 `mice-33.github.io`
+
+这是 GitHub Pages 提供的默认域名。
+
+### 8.2 `mice33.top`
+
+这是我绑定的自定义域名。
+
+但一定要注意：
+
+> 自定义域名只是换了一个访问入口  
+> 不等于换了网站托管服务器
+
+如果 `mice33.top` 最终通过 DNS 解析到的还是 GitHub Pages，  
+那么它本质上仍然是 GitHub Pages 上的同一个网站。
+
+---
+
+## 9️⃣ 为什么中国内地访问可能不稳定
+
+如果博客当前的核心链路是：
+
+- 本地生成
+- 部署到 GitHub Pages
+- 域名最终解析到 GitHub Pages
+
+那么出现下面这种情况时：
+
+- 海外/新加坡网络可以访问
+- 中国内地网络不太稳定
+
+问题通常在这条链路本身：
+
+> 中国内地到 GitHub Pages 的访问线路不稳定
+
+不过对于个人博客来说，如果目前主要是自己使用和偶尔分享，那么继续用 GitHub Pages 其实已经足够轻量、方便、免费。
+
+---
+
+## 🔟 VS Code 终端和本机终端为什么会不一样
+
+这个问题我也踩过。
+
+理论上，VS Code 的终端也是你电脑上的终端，但它和你平时单独打开的 PowerShell / Git Bash / cmd 还是可能有差异。
+
+常见差别包括：
+
+### 10.1 终端类型不同
+
+比如：
+
+- 本机外部终端是 Git Bash
+- VS Code 里开的是 PowerShell
+
+那同一条命令的表现就可能完全不同。
+
+### 10.2 PATH 环境变量不同
+
+有时你在系统里已经安装了 Node、Git、Hexo，  
+但 VS Code 打开得比较早，没有重新读取最新环境变量。
+
+于是就会出现：
+
+- 外部终端能运行
+- VS Code 终端找不到命令
+
+### 10.3 权限不同
+
+有些命令在管理员 PowerShell 里能执行，  
+但在普通权限终端里不一定能执行。
+
+### 10.4 SSH agent 会话不同
+
+就算你已经配好了 SSH，  
+也不代表每一个终端窗口都会自动拿到同样的 SSH 会话。
+
+所以我后来采取的方式是：
+
+✅ **写博客、改文件、看差异：用 VS Code**  
+✅ **Git 提交、Hexo 生成、Hexo 部署：优先用本机已经验证可用的终端**
+
+这样最省心。
+
+---
+
+## 1️⃣1️⃣ 我现在实际采用的更新流程
+
+结合前面这些知识，我现在更推荐的日常更新流程是：
+
+### 11.1 提交源码到 GitHub
+
+```bash
+git add .
+git commit -m "更新博客内容"
+git push origin main
+```
+
+### 11.2 重新生成并部署网站
+
+```bash
+npx hexo d -g
+```
+
+如果要拆开写，也可以：
+
+```bash
+npx hexo clean
+npx hexo g
+npx hexo d
+```
+
+这样一来：
+
+- GitHub 上的源码会更新
+- GitHub Pages 上的网站也会更新
+
+---
+
+## 1️⃣2️⃣ 把整个知识链串成一句话
+
+最后，用一句话把整条链路总结一下：
+
+> Hexo 博客源码通过 Git 做版本管理，用 GitHub 存远程仓库，通过 SSH key 做安全认证，在本地终端里用 Node / npm / npx / Hexo 生成静态网站，再把生成结果部署到 GitHub Pages，最后通过默认域名或自定义域名访问。  
+> 如果中国内地访问不稳，那属于托管平台和网络链路问题，不是 Hexo 或 Git 本身的问题。
+
+---
+
+## ✅ 小结
+
+> 只要把“源码、生成、部署、托管、访问”这五层关系理清楚，整个博客系统就会一下子明朗很多。
+
+后面不管是继续用 GitHub Pages，还是以后迁移到其他托管平台，思路都会更清晰。
+
+---
+
+## 📌 我自己的最简工作流
+
+最后附上我当前自己在用的一套最简命令：
+
+```bash
+git add .
+git commit -m "更新博客"
+git push origin main
+npx hexo d -g
+```
+
+如果你只是想先看本地效果：
+
+```bash
+npx hexo s
+```
+
+如果你只想备份源码，不更新网站：
+
+```bash
+git add .
+git commit -m "更新源码"
+git push origin main
+```
+
+---
+
+欢迎留言交流，如果后面我把博客迁移到其他托管平台，也会继续记录完整过程。

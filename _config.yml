@@ -102,5 +102,5 @@ theme: butterfly
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repository: https://github.com/mice-33/mice-33.github.io.git  #你的仓库地址
+  repository:  git@github.com:mice-33/mice-33.github.io.git  #你的仓库地址
   branch: main
