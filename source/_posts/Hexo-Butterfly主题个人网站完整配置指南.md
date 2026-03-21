@@ -40,12 +40,12 @@ cover: /img/hexo-butterfly-config.jpg
 
 在 Hexo 根目录创建 `_config.butterfly.yml` 文件，并把主题目录的 `_config.yml` 内容复制进去。
 
-```bash
-# 文件结构
-├── _config.yml                 # Hexo 主配置文件
-├── _config.butterfly.yml       # Butterfly 主题配置文件
+```text
+├── _config.yml                  # Hexo 主配置文件
+├── _config.butterfly.yml        # Butterfly 主题配置文件
 └── themes/butterfly/_config.yml # 主题原始配置（保留）
 ```
+
 > ⚠️ **注意**：
 > - 不要删除主题目录的 `_config.yml`
 > - 优先级：`_config.butterfly.yml` > `themes/butterfly/_config.yml`
@@ -120,14 +120,14 @@ hexo deploy
 **LeanCloud 配置步骤：**
 
 1. **注册 LeanCloud**
-    - 访问 [LeanCloud 控制台](https://console.leancloud.app/)
-    - 注册免费账号
-    - 创建应用（选择开发版）
+   - 访问 [LeanCloud 控制台](https://console.leancloud.app/)
+   - 注册免费账号
+   - 创建应用（选择开发版）
 
 2. **获取密钥**
-   ```
+   ```text
    应用设置 → 应用凭证
-   
+
    需要的信息：
    - AppID: xxxx-gzGzoHsz
    - AppKey: xxxx-bjGzoHsz
@@ -135,9 +135,9 @@ hexo deploy
    ```
 
 3. **配置 Vercel 环境变量**
-   ```
+   ```text
    Settings → Environment Variables
-   
+
    添加三个变量：
    LEAN_ID = 你的AppID
    LEAN_KEY = 你的AppKey
@@ -221,7 +221,8 @@ hexo new page movies
 #### 📝 页面内容示例
 
 **关于页面 (`source/about/index.md`)：**
-```yaml
+
+````markdown
 ---
 title: 关于我
 date: 2025-08-01 05:53:28
@@ -255,7 +256,7 @@ comments: true
 - **ORCID**: 0000-0000-0000-0000
 
 欢迎在下方留言交流 👇
-```
+````
 
 ## 4️⃣ 如何创建博文
 
@@ -288,17 +289,18 @@ hexo new "R语言数据可视化入门"
 创建后的文章位于：`source/_posts/文章标题.md`
 
 **完整的文章模板：**
-```yaml
+
+````markdown
 ---
 title: 生信入门：BLAST基本使用方法
 date: 2025-08-01 05:53:28
 updated: 2025-08-01 05:53:28
-tags: 
+tags:
   - 生物信息学
   - BLAST
   - 序列比对
   - 入门教程
-categories: 
+categories:
   - 生信技术
   - 工具使用
 author: mice33
@@ -322,7 +324,7 @@ BLAST（Basic Local Alignment Search Tool）是生物信息学中最常用的序
 - 用于核酸序列对核酸数据库的比对
 - 适用于基因序列、转录本序列等
 
-### 2. BLASTp  
+### 2. BLASTp
 - 用于蛋白质序列对蛋白质数据库的比对
 - 适用于蛋白质功能注释
 
@@ -332,6 +334,8 @@ BLAST（Basic Local Alignment Search Tool）是生物信息学中最常用的序
 # 使用命令行BLAST
 blastn -query input.fasta -db nt -out result.txt -outfmt 6
 ```
+````
+
 ### 4.3 Front-matter 字段说明
 
 | 字段 | 说明 | 示例 |
@@ -366,7 +370,3 @@ hexo deploy
 ---
 
 **这份配置指南帮到你了吗？如果有任何问题，欢迎在评论区讨论！** 💬
-
-
-
-
