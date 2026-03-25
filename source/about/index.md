@@ -7,6 +7,14 @@ comments: true
 
 # 👋 你好，我是 王心沛 同学
 
+## 了解我
+
+### 个人简历
+[点击查看简历 PDF](/files/resume.pdf)
+
+### 参与发表的文章
+[点击查看论文 PDF](/files/herpes-zoster-paper.pdf)
+
 ## 🎯 关于这个博客
 
 这里是我的个人技术博客，主要分享：
