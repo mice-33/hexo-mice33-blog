@@ -15,6 +15,10 @@ comments: true
 ### 参与发表的文章
 [点击查看论文 PDF](/files/herpes-zoster-paper.pdf)
 
+### 学习经历
+
+[点击查看游学经历](/files/Sussex.pdf)
+
 ## 🎯 关于这个博客
 
 这里是我的个人技术博客，主要分享：
