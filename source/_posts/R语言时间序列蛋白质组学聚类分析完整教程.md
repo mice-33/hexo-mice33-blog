@@ -11,9 +11,9 @@ tags:
   - TCseq
   - 数据可视化
 categories: 
-  - 生信技术
-  - R语言教程
+  - 生信分析
   - 蛋白质组学
+  - 聚类
 author: Mice33
 description: 详细介绍使用R语言TCseq包进行时间序列蛋白质组学聚类分析的完整流程，包含数据预处理、聚类算法、结果可视化等
 keywords: R语言, 蛋白质组学, 时间序列, 聚类分析, TCseq, 生物信息学, 数据分析

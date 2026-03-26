@@ -10,8 +10,8 @@ tags:
   - R语言
   - 生物信息学
 categories:
-  - 生信技术
-  - 单细胞分析
+  - 生信分析
+  - 单细胞转录组
 description: 以GSE182244为例，系统整理一套从原始表达矩阵读入、metadata标准化、质量控制、动态过滤、双细胞去除、聚类、Harmony批次校正到细胞类型注释的Seurat分析流程。
 keywords: Seurat, scRNA-seq, Harmony, scDblFinder, GSE182244, PBMC
 cover:
