@@ -1,10 +1,10 @@
 
-hexo clean //执行此命令后继续下一条
-hexo g //生成博客目录
-hexo s //本地预览
+npx hexo clean //执行此命令后继续下一条
+npx hexo g //生成博客目录
+npx hexo s //本地预览
 
 
 git add .
-git commit -m "在关于页添加简历和论文PDF"
+git commit -m "更新"
 git push origin main
 npx hexo d -g
